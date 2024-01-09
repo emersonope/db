@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.database.infnet.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,15 +22,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/")
 public class UserController {
 
+  @Value("${spring.application.servernick}")
+  private String nickname;
   @Autowired
   private UserService userService;
 
   @GetMapping
-  public List<User> getAllUsers() {
-    return userService.getAllUsers();
+  public ResponseEntity<List<User>> getAllUsers() {
+    List<User> users = userService.getAllUsers();
+
+    HttpHeaders httpHeaders = new HttpHeaders();
+    httpHeaders.set("server-name", nickname);
+    return ResponseEntity.ok().headers(httpHeaders).body(users);
   } 
 
   @GetMapping("/{id}")

@@ -1,0 +1,3 @@
+spring:
+  application:
+    servernick: test-server-nick
