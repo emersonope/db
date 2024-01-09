@@ -2,7 +2,10 @@ package com.database.infnet.controller;
 
 import java.util.List;
 
+import com.database.infnet.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,13 +32,21 @@ public class UserController {
   } 
 
   @GetMapping("/{id}")
-  public User getUserById(@PathVariable Long id) {
-    return userService.getUserById(id);
+  public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    try {
+      User user = userService.getUserById(id);
+      return ResponseEntity.ok(user);
+    } catch (UserNotFoundException ex) {
+      ex.printStackTrace();
+      ResponseEntity.notFound().build();
+    }
+    return null;
   }
 
   @PostMapping
-  public User createUser(@RequestBody User user) {
-    return userService.createUser(user);
+  public ResponseEntity<User> createUser(@RequestBody User user) {
+    User newUser = userService.createUser(user);
+    return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
   }
   
   @PutMapping("/{id}")

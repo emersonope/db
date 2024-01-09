@@ -1,6 +1,8 @@
 package com.database.infnet.service;
 
 import java.util.List;
+
+import com.database.infnet.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,7 @@ public class UserService {
 
 
     public User getUserById(Long id) {
-        return userRepository.findById(id).get();
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
     
