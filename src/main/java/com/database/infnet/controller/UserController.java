@@ -3,6 +3,9 @@ package com.database.infnet.controller;
 import java.util.List;
 
 import com.database.infnet.exception.UserNotFoundException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,11 @@ public class UserController {
 
   Logger logger = LoggerFactory.getLogger(UserController.class);
 
+  @Operation(description = "Return a list of users")
+  @ApiResponses(value = {
+          @ApiResponse(responseCode = "200", description = "Return the user"),
+          @ApiResponse(responseCode = "400", description = "User do not exist")
+  })
   @GetMapping
   public ResponseEntity<List<User>> getAllUsers() {
     List<User> users = userService.getAllUsers();
@@ -41,8 +49,14 @@ public class UserController {
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.set("server-name", nickname);
     return ResponseEntity.ok().headers(httpHeaders).body(users);
-  } 
+  }
 
+  @Operation(description = "Return a list of users")
+  @ApiResponses(value = {
+          @ApiResponse(responseCode = "200", description = "Return the user by ID"),
+          @ApiResponse(responseCode = "404", description = "User not found"),
+          @ApiResponse(responseCode = "400", description = "The server rejects the request, deeming it a client error.")
+  })
   @GetMapping("/{id}")
   public ResponseEntity<User> getUserById(@PathVariable Long id) {
     try {
@@ -55,12 +69,24 @@ public class UserController {
     }
   }
 
+  @Operation(description = "Return a list of users")
+  @ApiResponses(value = {
+          @ApiResponse(responseCode = "201", description = "User was created"),
+          @ApiResponse(responseCode = "404", description = "User not found"),
+          @ApiResponse(responseCode = "400", description = "The server rejects the request, deeming it a client error.")
+  })
   @PostMapping
   public ResponseEntity<User> createUser(@RequestBody User user) {
     User newUser = userService.createUser(user);
     return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
   }
-  
+
+  @Operation(description = "Return a list of users")
+  @ApiResponses(value = {
+          @ApiResponse(responseCode = "200", description = "User updated"),
+          @ApiResponse(responseCode = "404", description = "User not found"),
+          @ApiResponse(responseCode = "400", description = "The server rejects the request, deeming it a client error.")
+  })
   @PutMapping("/{id}")
   public User updateUser(@PathVariable Long id, @RequestBody User user) {
 
