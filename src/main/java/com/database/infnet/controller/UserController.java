@@ -3,6 +3,8 @@ package com.database.infnet.controller;
 import java.util.List;
 
 import com.database.infnet.exception.UserNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -30,10 +32,12 @@ public class UserController {
   @Autowired
   private UserService userService;
 
+  Logger logger = LoggerFactory.getLogger(UserController.class);
+
   @GetMapping
   public ResponseEntity<List<User>> getAllUsers() {
     List<User> users = userService.getAllUsers();
-
+    logger.info("Return all clients: " + users);
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.set("server-name", nickname);
     return ResponseEntity.ok().headers(httpHeaders).body(users);
@@ -43,12 +47,12 @@ public class UserController {
   public ResponseEntity<User> getUserById(@PathVariable Long id) {
     try {
       User user = userService.getUserById(id);
+      logger.info("Return Selected User: " + user);
       return ResponseEntity.ok(user);
     } catch (UserNotFoundException ex) {
       ex.printStackTrace();
-      ResponseEntity.notFound().build();
+      return ResponseEntity.notFound().build();
     }
-    return null;
   }
 
   @PostMapping

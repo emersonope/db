@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -19,4 +21,17 @@ public class User {
 
   @Column(name = "email")
   private String email;
+
+  @Column(name = "debt")
+  private BigDecimal debt;
+
+  @Override
+  public String toString() {
+    return "User{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", email='" + email + '\'' +
+            ", debt=" + debt +
+            '}';
+  }
 }
